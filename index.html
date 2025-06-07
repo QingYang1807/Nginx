@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>交互式 Nginx 手册</title>
+    <title>交互式 Nginx 手册 (高级版)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,6 +48,11 @@
         }
         .content-section.active {
             display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .code-block {
             background-color: #1e293b; /* slate-800 */
@@ -89,35 +94,65 @@
         .tab-content.active {
             display: block;
         }
+        .troubleshooting-card {
+            background-color: white;
+            border-left: 4px solid;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        .border-red-500 { border-color: #ef4444; }
+        .text-red-700 { color: #b91c1c; }
+        .border-amber-500 { border-color: #f59e0b; }
+        .text-amber-700 { color: #b45309; }
+        .border-sky-500 { border-color: #0ea5e9; }
+        .text-sky-700 { color: #0369a1; }
+
     </style>
 </head>
 <body class="text-slate-800">
 
     <div class="flex h-screen bg-slate-50">
         <!-- Sidebar Navigation -->
-        <aside class="w-64 bg-slate-800 text-slate-200 p-4 space-y-6 overflow-y-auto">
-            <div class="text-white text-2xl font-bold text-center">
+        <aside class="w-64 bg-slate-800 text-slate-200 p-4 space-y-4 overflow-y-auto">
+            <div class="text-white text-2xl font-bold text-center py-2">
                 Nginx 手册
             </div>
-            <nav>
-                <h3 class="px-4 text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">入门</h3>
-                <a href="#intro" class="nav-link active">🚀 简介与核心特性</a>
-                <a href="#install" class="nav-link">📦 安装指南</a>
-
-                <h3 class="mt-6 px-4 text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">核心配置</h3>
-                <a href="#config-structure" class="nav-link">🏗️ 配置文件结构</a>
-                <a href="#static-content" class="nav-link">🖼️ 静态内容服务</a>
-                
-                <h3 class="mt-6 px-4 text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">核心功能</h3>
-                <a href="#reverse-proxy" class="nav-link">📡 反向代理</a>
-                <a href="#load-balancing" class="nav-link">⚖️ 负载均衡</a>
-
-                <h3 class="mt-6 px-4 text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">高级主题</h3>
-                <a href="#performance" class="nav-link">⚡ 性能优化</a>
-                <a href="#security" class="nav-link">🛡️ 安全加固</a>
-                
-                <h3 class="mt-6 px-4 text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">快速参考</h3>
-                <a href="#cheatsheet" class="nav-link">📋 常用指令速查</a>
+            <nav class="space-y-4">
+                <div>
+                    <h3 class="px-4 text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">入门</h3>
+                    <a href="#intro" class="nav-link active">🚀 简介与核心特性</a>
+                    <a href="#install" class="nav-link">📦 安装指南</a>
+                </div>
+                <div>
+                    <h3 class="px-4 text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">深入理解</h3>
+                    <a href="#worker-model" class="nav-link">⚙️ 工作模型</a>
+                </div>
+                <div>
+                    <h3 class="mt-4 px-4 text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">核心配置</h3>
+                    <a href="#config-structure" class="nav-link">🏗️ 配置文件结构</a>
+                    <a href="#static-content" class="nav-link">🖼️ 静态内容服务</a>
+                </div>
+                <div>
+                    <h3 class="mt-4 px-4 text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">核心功能</h3>
+                    <a href="#reverse-proxy" class="nav-link">📡 反向代理</a>
+                    <a href="#load-balancing" class="nav-link">⚖️ 负载均衡</a>
+                </div>
+                <div>
+                    <h3 class="mt-4 px-4 text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">高级主题</h3>
+                    <a href="#performance" class="nav-link">⚡ 性能优化</a>
+                    <a href="#security" class="nav-link">🛡️ 安全加固</a>
+                    <a href="#caching" class="nav-link">🗄️ 内容缓存</a>
+                    <a href="#rewriting" class="nav-link">🔄 URL 重写</a>
+                </div>
+                <div>
+                    <h3 class="mt-4 px-4 text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">排错与维护</h3>
+                    <a href="#troubleshooting" class="nav-link">🩺 常见错误排查</a>
+                </div>
+                <div>
+                    <h3 class="mt-4 px-4 text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">快速参考</h3>
+                    <a href="#cheatsheet" class="nav-link">📋 常用指令速查</a>
+                </div>
             </nav>
         </aside>
 
@@ -182,7 +217,7 @@
 
             <!-- Section: Installation -->
             <section id="install" class="content-section">
-                <h1 class="text-4xl font-bold text-slate-900">安装指南</h1>
+                 <h1 class="text-4xl font-bold text-slate-900">安装指南</h1>
                 <p class="mt-4 text-lg text-slate-600">根据您的操作系统平台，选择对应的安装方式。我们推荐使用官方源或稳定可靠的软件仓库进行安装。</p>
                 
                 <div class="mt-8 bg-white p-6 rounded-lg shadow-sm">
@@ -267,6 +302,47 @@ sudo apt install nginx</code></pre>
                 </div>
             </section>
 
+            <!-- Section: Worker Model -->
+            <section id="worker-model" class="content-section">
+                <h1 class="text-4xl font-bold text-slate-900">Nginx 工作模型</h1>
+                <p class="mt-4 text-lg text-slate-600">Nginx 的高性能归功于其独特的 **Master-Worker** 进程模型和**事件驱动**架构。这个组合使其能以极低的资源消耗处理海量并发连接。</p>
+                
+                <div class="mt-10 bg-white p-6 rounded-lg shadow-sm">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-4">Master-Worker 进程模型</h2>
+                    <p class="mb-4">Nginx 启动后，会创建一个 Master 主进程和数个 Worker 工作进程。</p>
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <div class="md:w-1/2">
+                            <h4 class="font-semibold text-xl text-sky-700 mb-2">Master 进程</h4>
+                             <ul class="list-disc list-inside space-y-2 text-slate-700">
+                                <li>**不处理请求**：只负责管理 Worker 进程。</li>
+                                <li>**读取配置**：解析并验证配置文件。</li>
+                                <li>**绑定端口**：执行需要 root 权限的操作，如绑定到 80/443 端口。</li>
+                                <li>**管理 Worker**：启动、停止、监控 Worker 进程，并在 Worker 异常退出时重启它。</li>
+                                <li>**平滑重载**：接收到 `nginx -s reload` 信号后，启动带有新配置的 Worker 进程，并通知旧 Worker 进程在处理完当前请求后优雅退出。</li>
+                            </ul>
+                        </div>
+                        <div class="md:w-1/2">
+                             <h4 class="font-semibold text-xl text-teal-700 mb-2">Worker 进程</h4>
+                             <ul class="list-disc list-inside space-y-2 text-slate-700">
+                                <li>**处理所有请求**：每个 Worker 都是一个独立的单线程进程，负责接收、处理和响应客户端请求。</li>
+                                <li>**低权限运行**：以 `nginx.conf` 中指定的非特权用户（如 `www-data`）身份运行，增强安全性。</li>
+                                <li>**数量配置**：`worker_processes` 指令通常设置为服务器的 CPU 核心数，以充分利用硬件。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                 <div class="mt-10 bg-white p-6 rounded-lg shadow-sm">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-4">事件驱动架构</h2>
+                    <p class="mb-4">这是 Nginx 高并发能力的核心。与传统“一个连接一个进程/线程”的模型不同，Nginx 的单个 Worker 进程可以处理数千个连接。</p>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700">
+                        <li>**非阻塞 I/O**：当一个操作（如读写网络数据）需要等待时，Worker 进程不会被阻塞。它会注册一个事件，然后继续处理其他就绪的连接。</li>
+                        <li>**事件通知机制**：使用高效的系统调用（如 Linux 上的 `epoll`）来监听大量连接上的事件（新连接、数据可读等）。</li>
+                        <li>**资源高效**：极大地减少了内存占用和CPU上下文切换的开销，因为不需要为每个连接维护独立的进程或线程堆栈。</li>
+                    </ul>
+                </div>
+            </section>
+            
             <!-- Section: Config Structure -->
             <section id="config-structure" class="content-section">
                  <h1 class="text-4xl font-bold text-slate-900">配置文件结构</h1>
@@ -279,7 +355,7 @@ sudo apt install nginx</code></pre>
                             <div class="diagram-block" data-target="main-context">
                                 <span class="text-purple-400">user</span> www-data;<br>
                                 <span class="text-purple-400">worker_processes</span> auto;
-                                <div class="diagram-block mt-2" data-target="events-context">
+                                <div class="diagram-block mt-2 diagram-clickable" data-target="events-context">
                                     <span class="text-yellow-400">events</span> {<br>
                                     <span class="pl-4 text-purple-400">worker_connections</span> 768;<br>
                                     }
@@ -313,9 +389,26 @@ sudo apt install nginx</code></pre>
 
                     <!-- Info Panel -->
                     <div class="md:w-1/2 lg:w-3/5 bg-white p-6 rounded-lg shadow-sm">
-                        <div id="main-context" class="config-info">...</div>
-                        <div id="events-context" class="config-info">...</div>
-                        <div id="http-context" class="config-info">
+                        <div id="main-context-info" class="config-info hidden">
+                             <h3 class="text-2xl font-semibold mb-2 text-purple-600">Main/Global 块</h3>
+                            <p class="mb-4">定义 Nginx 的全局核心功能，位于所有块之外。</p>
+                            <ul class="list-disc list-inside space-y-2 text-slate-700">
+                                <li><code>user</code>: 指定 Worker 进程的运行用户。</li>
+                                <li><code>worker_processes</code>: Worker 进程数量，通常为 `auto` 或 CPU 核心数。</li>
+                                <li><code>error_log</code>: 全局错误日志。</li>
+                                <li><code>pid</code>: Master 进程的 PID 文件路径。</li>
+                            </ul>
+                        </div>
+                        <div id="events-context-info" class="config-info hidden">
+                            <h3 class="text-2xl font-semibold mb-2 text-yellow-500">events 块</h3>
+                            <p class="mb-4">配置 Nginx 的网络连接处理机制。</p>
+                            <ul class="list-disc list-inside space-y-2 text-slate-700">
+                                <li><code>worker_connections</code>: 每个 Worker 进程的最大连接数。</li>
+                                <li><code>use</code>: 使用的事件模型，如 `epoll`。</li>
+                                <li><code>multi_accept</code>: 允许 Worker 一次性接受多个新连接。</li>
+                            </ul>
+                        </div>
+                        <div id="http-context-info" class="config-info">
                             <h3 class="text-2xl font-semibold mb-2 text-yellow-600">http 块</h3>
                             <p class="mb-4">定义HTTP服务器的主要配置，所有 `server` 块都位于此块内。</p>
                             <ul class="list-disc list-inside space-y-2 text-slate-700">
@@ -325,7 +418,7 @@ sudo apt install nginx</code></pre>
                                 <li><code>keepalive_timeout</code>: 设置长连接的超时时间。</li>
                             </ul>
                         </div>
-                         <div id="server-context" class="config-info hidden">
+                         <div id="server-context-info" class="config-info hidden">
                             <h3 class="text-2xl font-semibold mb-2 text-green-600">server 块</h3>
                             <p class="mb-4">定义一个虚拟主机，用于处理特定域名和端口的请求。</p>
                             <ul class="list-disc list-inside space-y-2 text-slate-700">
@@ -335,7 +428,7 @@ sudo apt install nginx</code></pre>
                                 <li><code>index</code>: 指定目录的默认索引文件。</li>
                             </ul>
                         </div>
-                         <div id="location-context" class="config-info hidden">
+                         <div id="location-context-info" class="config-info hidden">
                             <h3 class="text-2xl font-semibold mb-2 text-cyan-600">location 块</h3>
                             <p class="mb-4">根据请求的URI匹配并定义如何处理请求。</p>
                             <ul class="list-disc list-inside space-y-2 text-slate-700">
@@ -349,10 +442,10 @@ sudo apt install nginx</code></pre>
                     </div>
                  </div>
             </section>
-
+            
             <!-- Section: Static Content -->
             <section id="static-content" class="content-section">
-                <h1 class="text-4xl font-bold text-slate-900">静态内容服务</h1>
+                 <h1 class="text-4xl font-bold text-slate-900">静态内容服务</h1>
                 <p class="mt-4 text-lg text-slate-600">Nginx 在服务静态文件（如HTML, CSS, JS, 图片）方面极为高效。核心指令是 `root` 和 `alias`。</p>
 
                 <div class="mt-8 grid md:grid-cols-2 gap-8">
@@ -440,7 +533,7 @@ sudo apt install nginx</code></pre>
 
             <!-- Section: Load Balancing -->
             <section id="load-balancing" class="content-section">
-                <h1 class="text-4xl font-bold text-slate-900">负载均衡</h1>
+                 <h1 class="text-4xl font-bold text-slate-900">负载均衡</h1>
                 <p class="mt-4 text-lg text-slate-600">通过 `upstream` 模块将流量分发到多个后端服务器，提高应用的可用性和可伸缩性。点击下方按钮，查看不同算法如何分发10个模拟请求。</p>
 
                 <div class="mt-8 bg-white p-6 rounded-lg shadow-sm">
@@ -475,7 +568,6 @@ sudo apt install nginx</code></pre>
 }</code></pre>
                     </div>
                 </div>
-
             </section>
 
             <!-- Section: Performance -->
@@ -498,11 +590,11 @@ worker_processes auto;</code></pre>
                         <p class="mb-4">服务器最大连接数约等于 `worker_processes` × `worker_connections`。尝试调整下方参数，查看理论最大值。</p>
                         <div class="space-y-3">
                             <div>
-                                <label for="worker_processes" class="font-medium">Worker Processes:</label>
+                                <label for="worker_processes_input" class="font-medium">Worker Processes:</label>
                                 <input type="number" id="worker_processes_input" value="4" class="w-full mt-1 p-2 border rounded-md">
                             </div>
                             <div>
-                                <label for="worker_connections" class="font-medium">Worker Connections:</label>
+                                <label for="worker_connections_input" class="font-medium">Worker Connections:</label>
                                 <input type="number" id="worker_connections_input" value="1024" class="w-full mt-1 p-2 border rounded-md">
                             </div>
                             <div class="text-lg font-semibold">
@@ -572,10 +664,156 @@ location /login {
                     </div>
                 </div>
             </section>
+            
+            <!-- Section: Caching -->
+            <section id="caching" class="content-section">
+                <h1 class="text-4xl font-bold text-slate-900">内容缓存</h1>
+                <p class="mt-4 text-lg text-slate-600">Nginx 可以缓存来自后端服务器的响应，极大地提升性能并降低后端负载。这对于不经常变化的动态内容或静态API响应尤其有效。</p>
+                
+                <h3 class="text-2xl font-semibold mt-10 mb-4">配置缓存路径和区域</h3>
+                <p class="mb-4">首先，需要在 `http` 块中使用 `proxy_cache_path` 定义一个缓存区域。</p>
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <div class="code-block" id="code-cache-path">
+                         <button class="copy-btn" onclick="copyToClipboard('code-cache-path')">复制</button>
+                        <pre><code># 在 http 块中
+proxy_cache_path /var/cache/nginx/my_cache levels=1:2 keys_zone=my_cache_zone:10m max_size=10g inactive=60m use_temp_path=off;</code></pre>
+                    </div>
+                     <ul class="mt-4 list-disc list-inside space-y-2 text-slate-700">
+                        <li><code>/var/cache/nginx/my_cache</code>: 缓存文件在磁盘上的存储路径。</li>
+                        <li><code>levels=1:2</code>: 缓存目录的层级结构，有助于提升查找效率。</li>
+                        <li><code>keys_zone=my_cache_zone:10m</code>: 在共享内存中创建一个名为 `my_cache_zone` 的区域，大小为 10MB，用于存储缓存键和元数据。</li>
+                        <li><code>max_size=10g</code>: 缓存总大小的上限。</li>
+                        <li><code>inactive=60m</code>: 如果缓存在 60 分钟内未被访问，则将其从缓存中删除。</li>
+                    </ul>
+                </div>
+
+                <h3 class="text-2xl font-semibold mt-10 mb-4">在 Location 中启用缓存</h3>
+                <p class="mb-4">在需要缓存的 `location` 块中，使用 `proxy_cache` 指令引用之前定义的缓存区域。</p>
+                 <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <div class="code-block" id="code-cache-enable">
+                         <button class="copy-btn" onclick="copyToClipboard('code-cache-enable')">复制</button>
+                        <pre><code>location /api/data/ {
+    proxy_pass http://backend_api;
+    proxy_cache my_cache_zone; # 启用名为 my_cache_zone 的缓存
+    proxy_cache_valid 200 302 10m; # 对 200 和 302 响应缓存 10 分钟
+    proxy_cache_valid 404 1m;      # 对 404 响应缓存 1 分钟
+    proxy_cache_key "$scheme$request_method$host$request_uri"; # 定义缓存键
+    
+    # 在响应头中添加缓存状态，便于调试
+    add_header X-Proxy-Cache $upstream_cache_status;
+}</code></pre>
+                    </div>
+                    <p class="mt-4 text-slate-600">响应头中的 `X-Proxy-Cache` 将显示 `HIT` (命中缓存)、`MISS` (未命中)、`EXPIRED` (缓存过期)等状态，非常有助于调试。</p>
+                </div>
+            </section>
+            
+            <!-- Section: Rewriting -->
+            <section id="rewriting" class="content-section">
+                <h1 class="text-4xl font-bold text-slate-900">URL 重写</h1>
+                <p class="mt-4 text-lg text-slate-600">Nginx 的 `ngx_http_rewrite_module` 模块允许您使用正则表达式修改请求 URI，实现 URL 清理、重定向或内部路由。</p>
+                
+                <h3 class="text-2xl font-semibold mt-10 mb-4">`rewrite` 指令</h3>
+                <p class="mb-4">`rewrite` 是核心指令，语法为：`rewrite regex replacement [flag];`</p>
+                
+                 <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h4 class="font-semibold text-lg mb-2">指令参数</h4>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700">
+                        <li><code>regex</code>: 用于匹配请求 URI 的 PCRE 正则表达式。</li>
+                        <li><code>replacement</code>: 如果正则匹配成功，用于替换 URI 的字符串。可以包含正则表达式的捕获组（如 `$1`, `$2`）。</li>
+                        <li><code>flag</code>: (可选) 控制重写行为的标志。</li>
+                    </ul>
+                    <h4 class="font-semibold text-lg mt-6 mb-2">重写标志 (Flags)</h4>
+                     <ul class="list-disc list-inside space-y-2 text-slate-700">
+                        <li><code>last</code>: 停止处理当前 `rewrite` 模块的指令集，并使用重写后的 URI 开始新一轮的 `location` 匹配。</li>
+                        <li><code>break</code>: 停止处理当前 `rewrite` 模块的指令集，像 `break` 在 `server` 块中一样，但重写后的 URI 不会重新匹配 `location`。</li>
+                        <li><code>redirect</code>: 返回一个 302 临时重定向。</li>
+                        <li><code>permanent</code>: 返回一个 301 永久重定向。</li>
+                    </ul>
+                </div>
+
+                <h3 class="text-2xl font-semibold mt-10 mb-4">重写示例</h3>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 class="font-semibold text-lg mb-2">将旧 API 路径重写为新路径</h4>
+                        <div class="code-block" id="code-rewrite-api">
+                            <button class="copy-btn" onclick="copyToClipboard('code-rewrite-api')">复制</button>
+                            <pre><code># /users/123 -> /api/v1/users/123
+rewrite ^/users/(.*)$ /api/v1/users/$1 last;</code></pre>
+                        </div>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 class="font-semibold text-lg mb-2">HTTP 到 HTTPS 的永久重定向</h4>
+                        <div class="code-block" id="code-rewrite-https">
+                            <button class="copy-btn" onclick="copyToClipboard('code-rewrite-https')">复制</button>
+                            <pre><code>server {
+    listen 80;
+    server_name example.com;
+    # 虽然 return 更好，但 rewrite 也能实现
+    rewrite ^ https://$host$request_uri? permanent;
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+                 <p class="mt-8 text-slate-600">**最佳实践**: 尽可能使用 `return` 指令进行简单的重定向，因为它更高效。对于需要捕获和重组 URI 的复杂逻辑，`rewrite` 是不二之选。避免在 `if` 指令中使用 `rewrite`，因为这可能导致不可预测的行为。</p>
+            </section>
+            
+            <!-- Section: Troubleshooting -->
+            <section id="troubleshooting" class="content-section">
+                <h1 class="text-4xl font-bold text-slate-900">常见错误排查</h1>
+                <p class="mt-4 text-lg text-slate-600">当 Nginx 遇到问题时，它会返回特定的 HTTP 状态码。理解这些错误的含义是快速定位和解决问题的关键。</p>
+                
+                <div class="mt-10 space-y-8">
+                    <div class="troubleshooting-card border-red-500">
+                        <h2 class="text-3xl font-bold text-red-700">502 Bad Gateway</h2>
+                        <p class="mt-2 mb-4 text-slate-600">**含义**: Nginx 作为代理，从后端服务器收到了一个无效的响应。</p>
+                        <h4 class="font-semibold text-lg mb-2">常见原因与解决方案</h4>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>**后端服务未运行或崩溃**: 确保您的应用服务器（如 Node.js, PHP-FPM, uWSGI）正在运行。检查其日志文件以寻找错误。</li>
+                            <li>**Nginx 配置错误**: 检查 `proxy_pass` 指令中的地址和端口是否正确，确保 Nginx 可以访问到后端服务。</li>
+                            <li>**防火墙或网络问题**: 确保 Nginx 服务器和后端服务器之间的网络是通的，没有防火墙规则阻止它们通信。</li>
+                            <li>**后端服务过载**: 如果后端服务因请求过多而无响应，可能会导致 502。考虑优化后端或增加服务器数量。</li>
+                        </ul>
+                    </div>
+
+                     <div class="troubleshooting-card border-amber-500">
+                        <h2 class="text-3xl font-bold text-amber-700">504 Gateway Timeout</h2>
+                        <p class="mt-2 mb-4 text-slate-600">**含义**: Nginx 作为代理，在等待后端服务器响应时超时。</p>
+                        <h4 class="font-semibold text-lg mb-2">常见原因与解决方案</h4>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>**后端处理时间过长**: 后端应用执行一个耗时操作（如复杂的数据库查询或大文件处理）超过了 Nginx 的超时设置。
+                                <div class="code-block mt-2 text-sm" id="code-ts-504">
+                                    <button class="copy-btn" onclick="copyToClipboard('code-ts-504')">复制</button>
+                                    <pre><code># 增加超时时间
+proxy_read_timeout 300s;
+proxy_connect_timeout 300s;
+proxy_send_timeout 300s;</code></pre>
+                                </div>
+                            </li>
+                            <li>**网络延迟**: Nginx 与后端服务器之间的网络连接缓慢或不稳定。</li>
+                            <li>**后端服务负载高**: 与 502 类似，后端服务过载也可能导致响应缓慢，最终超时。</li>
+                        </ul>
+                    </div>
+
+                    <div class="troubleshooting-card border-sky-500">
+                        <h2 class="text-3xl font-bold text-sky-700">413 Content Too Large</h2>
+                        <p class="mt-2 mb-4 text-slate-600">**含义**: 客户端发送的请求体（如文件上传）的大小超过了 Nginx 配置的上限。</p>
+                        <h4 class="font-semibold text-lg mb-2">解决方案</h4>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>在 `http`, `server`, 或 `location` 块中增加 `client_max_body_size` 的值。
+                                 <div class="code-block mt-2 text-sm" id="code-ts-413">
+                                    <button class="copy-btn" onclick="copyToClipboard('code-ts-413')">复制</button>
+                                    <pre><code># 允许最大 100MB 的请求体
+client_max_body_size 100M;</code></pre>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
 
             <!-- Section: Cheatsheet -->
             <section id="cheatsheet" class="content-section">
-                <h1 class="text-4xl font-bold text-slate-900">常用指令速查</h1>
+                 <h1 class="text-4xl font-bold text-slate-900">常用指令速查</h1>
                 <p class="mt-4 text-lg text-slate-600">一份快速参考，涵盖了配置 Nginx 时最常用的一些指令和变量。</p>
                  <div class="mt-8 bg-white p-6 rounded-lg shadow-sm">
                     <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
@@ -613,7 +851,6 @@ location /login {
                     </div>
                  </div>
             </section>
-
         </main>
     </div>
 
@@ -639,18 +876,21 @@ location /login {
                         section.classList.add('active');
                     }
                 });
+                document.querySelector('main').scrollTop = 0;
             }
 
             navLinks.forEach(link => {
                 link.addEventListener('click', function (e) {
                     e.preventDefault();
                     const targetId = this.getAttribute('href');
-                    history.pushState(null, null, targetId);
-                    switchPage(targetId);
+                    if (window.location.hash !== targetId) {
+                        history.pushState({path: targetId}, '', targetId);
+                        switchPage(targetId);
+                    }
                 });
             });
 
-            window.addEventListener('popstate', () => switchPage(window.location.hash));
+            window.addEventListener('popstate', (e) => switchPage(e.state ? e.state.path : window.location.hash));
             switchPage(window.location.hash);
 
 
@@ -671,24 +911,23 @@ location /login {
                 });
             }
 
-
             // Config Structure Diagram
             const diagramBlocks = document.querySelectorAll('#config-diagram .diagram-clickable');
             const configInfos = document.querySelectorAll('.config-info');
 
             diagramBlocks.forEach(block => {
                 block.addEventListener('click', function() {
+                    const targetId = this.dataset.target + '-info';
                     diagramBlocks.forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
 
                     configInfos.forEach(info => info.classList.add('hidden'));
-                    const targetInfo = document.getElementById(this.dataset.target);
+                    const targetInfo = document.getElementById(targetId);
                     if (targetInfo) {
                        targetInfo.classList.remove('hidden');
                     }
                 });
             });
-            // Init diagram selection
             document.querySelector('#config-diagram .diagram-clickable[data-target="http-context"]').click();
 
             // Load Balancer Chart
@@ -835,7 +1074,6 @@ location /login {
                 button.innerText = originalText;
             }, 2000);
         }
-
     </script>
 </body>
 </html>
